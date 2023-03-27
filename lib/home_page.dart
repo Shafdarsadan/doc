@@ -1,11 +1,13 @@
 import 'package:doc/appointmentbooking.dart';
 import 'package:doc/checkup.dart';
 import 'package:doc/help.dart';
+import 'package:doc/helper/helper.dart';
 import 'package:doc/homelocation.dart';
 import 'package:doc/loginScreen.dart';
 import 'package:doc/profileScreen.dart';
 import 'package:doc/signout.dart';
 import 'package:doc/videoconsultation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -54,12 +56,18 @@ class _HomeState extends State<Home> {
               ListTile(
                 leading: Icon(Icons.logout,size:25,color: Colors.red),
                 title: Text('SignOut',style: TextStyle(fontSize: 12),),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              LoginScreen()));
+                onTap: () async{
+                  final _helper = Helper();
+                  try{
+                    await _helper.firebaseSignout();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                LoginScreen()));
+                  }on FirebaseAuthException catch(e){
+                  print(e.message);
+                  }
                 },
               ),
 

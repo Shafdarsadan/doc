@@ -1,6 +1,8 @@
 import 'package:doc/doctorregister.dart';
+import 'package:doc/helper/helper.dart';
 import 'package:doc/home_page.dart';
 import 'package:doc/userregister.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
@@ -18,7 +20,8 @@ class _LoginScreenState extends State<LoginScreen>{
 
   bool isvalid = true;
   bool? isRememberMe = false;
-  final emailController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
 
 
 
@@ -87,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen>{
           height: 45,
           width: 300,
           child: TextField(
+            controller: passController,
             keyboardType: TextInputType.visiblePassword,
             obscureText: true,
             style: TextStyle(
@@ -181,12 +185,22 @@ class _LoginScreenState extends State<LoginScreen>{
               ),
             );
           }
-          else
-            Navigator.push(
+          else{
+          final _helper = Helper();
+          try{
+            _helper.firebaselogin(email: emailController.text, password: passController.text).whenComplete(() => Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Home()));
+                        Home())));
+          }on FirebaseAuthException catch(e){
+            print(e);
+            // ScaffoldMessenger
+
+          }
+
+          }
+
 
 
 
