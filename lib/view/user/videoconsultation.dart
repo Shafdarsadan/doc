@@ -1,6 +1,6 @@
 
-import 'package:doc/home_page.dart';
-import 'package:doc/homelocation.dart';
+import 'package:doc/view/user/home_page.dart';
+import 'package:doc/view/user/homelocation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';

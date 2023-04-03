@@ -1,23 +1,19 @@
-import 'package:doc/helper/helper.dart';
-import 'package:doc/home_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:doc/view/user/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
 
 
-class UserSignUpScreen extends StatefulWidget{
+class DoctorSignUpScreen extends StatefulWidget{
 
   @override
-  _UserSignUpScreenState createState() => _UserSignUpScreenState();
+  _DoctorSignUpScreenState createState() => _DoctorSignUpScreenState();
 }
 
-class _UserSignUpScreenState extends State<UserSignUpScreen>{
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passController = TextEditingController();
+class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
 
   bool isvalid = true;
-  // final emailController = TextEditingController();
+  final emailController = TextEditingController();
 
   Widget buildFirstName() {
     return Column(
@@ -105,6 +101,139 @@ class _UserSignUpScreenState extends State<UserSignUpScreen>{
     );
   }
 
+  
+  // Widget buildDepartment() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       SizedBox(height: 8),
+  //       Container(
+  //         alignment: Alignment.centerLeft,
+  //         decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             borderRadius: BorderRadius.circular(10),
+  //             boxShadow: [
+  //               BoxShadow(
+  //                   color: Colors.black26,
+  //                   blurRadius: 6,
+  //                   offset: Offset(0,2)
+  //               )
+  //             ]
+  //         ),
+  //         height: 45,
+  //         width: 300,
+  //         child: TextField(
+  //           keyboardType: TextInputType.name,
+  //           style: TextStyle(
+  //             color: Colors.black87,
+  //           ),
+  //           decoration: InputDecoration(
+  //               border: InputBorder.none,
+  //               contentPadding: EdgeInsets.only(top: 14),
+  //               prefixIcon: Icon(
+  //                 Icons.person,
+  //                 color: Color(0xff00008B),
+  //               ),
+  //               hintText: 'Department',
+  //               hintStyle: TextStyle(
+  //                 color: Colors.black38,
+  //               )
+  //           ),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
+
+  
+  Widget buildExperience() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 8),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0,2)
+                )
+              ]
+          ),
+          height: 45,
+          width: 300,
+          child: TextField(
+            keyboardType: TextInputType.name,
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14),
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Color(0xff00008B),
+                ),
+                hintText: 'Experience',
+                hintStyle: TextStyle(
+                  color: Colors.black38,
+                )
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+
+  
+  Widget buildQualification() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 8),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0,2)
+                )
+              ]
+          ),
+          height: 45,
+          width: 300,
+          child: TextField(
+            keyboardType: TextInputType.name,
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14),
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Color(0xff00008B),
+                ),
+                hintText: 'Qualification',
+                hintStyle: TextStyle(
+                  color: Colors.black38,
+                )
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   Widget buildEmail() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +255,7 @@ class _UserSignUpScreenState extends State<UserSignUpScreen>{
           height: 45,
           width: 300,
           child: TextField(
-            controller: _emailController,
+            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.black87,
@@ -170,7 +299,6 @@ class _UserSignUpScreenState extends State<UserSignUpScreen>{
           height: 45,
           width: 300,
           child: TextField(
-            controller: _passController,
             keyboardType: TextInputType.visiblePassword,
             obscureText: true,
             style: TextStyle(
@@ -243,8 +371,8 @@ class _UserSignUpScreenState extends State<UserSignUpScreen>{
       padding: EdgeInsets.symmetric(vertical: 25),
       width: 100,
       child: ElevatedButton(
-        onPressed: () async{
-          if(!EmailValidator.validate(_emailController.text)){
+        onPressed: () {
+          if(!EmailValidator.validate(emailController.text)){
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Container(
@@ -262,22 +390,12 @@ class _UserSignUpScreenState extends State<UserSignUpScreen>{
                 elevation: 0,
               ),
             );
-          }else{
-            final _helper = Helper();
-            try{
-             await _helper.firebasecreateuser(email: _emailController.text, password: _passController.text).whenComplete(() =>Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Home())) );
-            }on FirebaseAuthException catch(e) {
-              print(e);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${e.message}")));
-
-            }
-
           }
-
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      Home()));
         },
         style: ElevatedButton.styleFrom(
           primary: Colors.white,
@@ -368,22 +486,32 @@ class _UserSignUpScreenState extends State<UserSignUpScreen>{
                         size: 100,
                       ),
                       Text(
-                        'User Signup',
+                        'Doctor Signup',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 20),
-                      buildFirstName(),
-                      SizedBox(height: 20),
-                      buildLastName(),
-                      SizedBox(height: 20),
-                      buildEmail(),
-                      SizedBox(height: 20),
-                      buildPassword(),
-                      SizedBox(height: 20),
+              
+                      Column(
+                        children: [
+                          buildFirstName(),
+               
+                          buildLastName(),
+                          BuildDepartment(),
+                          buildQualification(),
+                          buildExperience(),
+                          TimeSlote(),
+                          
+
+       
+                          buildEmail(),
+              
+                          buildPassword(),
+                        ],
+                      ),
+            
                       confirmPassword(),
                       buildSignUpbtn(),
                       buildLoginbtn(),
@@ -398,6 +526,78 @@ class _UserSignUpScreenState extends State<UserSignUpScreen>{
     );
   }
 }
+
+class BuildDepartment extends StatelessWidget {
+  const BuildDepartment({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ExpansionTile(
+        
+        title: Text("Select Department", style: TextStyle(color: Colors.white),)),
+    );
+  }
+}
+
+
+
+
+
+class TimeSlote extends StatelessWidget {
+  const TimeSlote({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      width: double.infinity,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Select Time Slote", style: TextStyle(color:Colors.white)),
+          ElevatedButton(onPressed: (){
+
+            showBottomSheet(context: context, builder: (context){
+              return Container(
+                height: 250,
+                
+                width: double.infinity,
+                child: BottomSheet(
+
+                  enableDrag: true,
+                  
+                  
+                  builder: (BuildContext context) {
+                  return Container(
+                    padding: EdgeInsets.all(20), 
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        SwitchListTile(value: false, onChanged: (value) {
+                          value = !value;}, title: Text("Morning Slote \n(10Am - 12:30Pm)"),),
+                        SwitchListTile(value: false, onChanged: (value) {}, title: Text("Evening Slote \n(10Am - 12:30Pm)"),),
+                        SwitchListTile(value: false, onChanged: (value) {}, title: Text("Night   Slote \n(10Am - 12:30Pm)"),),
+                      ],
+                    ) 
+                  );
+                  }, onClosing: () {  },),
+              );
+            },);
+          }, child: Text("Choose Timeslote"))
+        ],
+      ),
+    );
+  }
+}
+
+
+  
+
 void Validate(String email) {
   bool isvalid = EmailValidator.validate(email);
   print(isvalid);

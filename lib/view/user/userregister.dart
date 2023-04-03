@@ -1,19 +1,23 @@
-import 'package:doc/home_page.dart';
+import 'package:doc/helper/helper.dart';
+import 'package:doc/view/user/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
 
 
-class DoctorSignUpScreen extends StatefulWidget{
+class UserSignUpScreen extends StatefulWidget{
 
   @override
-  _DoctorSignUpScreenState createState() => _DoctorSignUpScreenState();
+  _UserSignUpScreenState createState() => _UserSignUpScreenState();
 }
 
-class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
+class _UserSignUpScreenState extends State<UserSignUpScreen>{
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passController = TextEditingController();
 
   bool isvalid = true;
-  final emailController = TextEditingController();
+  // final emailController = TextEditingController();
 
   Widget buildFirstName() {
     return Column(
@@ -122,7 +126,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
           height: 45,
           width: 300,
           child: TextField(
-            controller: emailController,
+            controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.black87,
@@ -166,6 +170,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
           height: 45,
           width: 300,
           child: TextField(
+            controller: _passController,
             keyboardType: TextInputType.visiblePassword,
             obscureText: true,
             style: TextStyle(
@@ -238,8 +243,8 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
       padding: EdgeInsets.symmetric(vertical: 25),
       width: 100,
       child: ElevatedButton(
-        onPressed: () {
-          if(!EmailValidator.validate(emailController.text)){
+        onPressed: () async{
+          if(!EmailValidator.validate(_emailController.text)){
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Container(
@@ -257,12 +262,22 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
                 elevation: 0,
               ),
             );
+          }else{
+            final _helper = Helper();
+            try{
+             await _helper.firebasecreateuser(email: _emailController.text, password: _passController.text).whenComplete(() =>Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Home())) );
+            }on FirebaseAuthException catch(e) {
+              print(e);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${e.message}")));
+
+            }
+
           }
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      Home()));
+
         },
         style: ElevatedButton.styleFrom(
           primary: Colors.white,
@@ -353,7 +368,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
                         size: 100,
                       ),
                       Text(
-                        'Doctor Signup',
+                        'User Signup',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 40,
