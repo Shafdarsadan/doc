@@ -25,7 +25,7 @@ class _LocationsearchState extends State<Locationsearch> {
       ),
       body: ListView(
         children: [
-          Text('hello shafdar sadan'),
+          Text('Doctors list view.fetching from doctor_register'),
         ],
       ),
     );

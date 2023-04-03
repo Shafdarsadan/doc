@@ -1,105 +1,29 @@
-import 'package:doc/home_page.dart';
+import 'package:doc/view/doctor/doctorregister.dart';
+import 'package:doc/helper/helper.dart';
+import 'package:doc/view/user/home_page.dart';
+import 'package:doc/view/user/userregister.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
+import 'userregister.dart';
 
 
-class DoctorSignUpScreen extends StatefulWidget{
+class LoginScreen extends StatefulWidget{
 
   @override
-  _DoctorSignUpScreenState createState() => _DoctorSignUpScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
+class _LoginScreenState extends State<LoginScreen>{
+
 
   bool isvalid = true;
-  final emailController = TextEditingController();
+  bool? isRememberMe = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
 
-  Widget buildFirstName() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 8),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(0,2)
-                )
-              ]
-          ),
-          height: 45,
-          width: 300,
-          child: TextField(
-            keyboardType: TextInputType.name,
-            style: TextStyle(
-              color: Colors.black87,
-            ),
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top: 14),
-                prefixIcon: Icon(
-                  Icons.person,
-                  color: Color(0xff00008B),
-                ),
-                hintText: 'First Name',
-                hintStyle: TextStyle(
-                  color: Colors.black38,
-                )
-            ),
-          ),
-        )
-      ],
-    );
-  }
 
-  Widget buildLastName() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 8),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(0,2)
-                )
-              ]
-          ),
-          height: 45,
-          width: 300,
-          child: TextField(
-            keyboardType: TextInputType.name,
-            style: TextStyle(
-              color: Colors.black87,
-            ),
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top: 14),
-                prefixIcon: Icon(
-                  Icons.person,
-                  color: Color(0xff00008B),
-                ),
-                hintText: 'Last Name',
-                hintStyle: TextStyle(
-                  color: Colors.black38,
-                )
-            ),
-          ),
-        )
-      ],
-    );
-  }
 
   Widget buildEmail() {
     return Column(
@@ -121,7 +45,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
           ),
           height: 45,
           width: 300,
-          child: TextField(
+          child:  TextField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
@@ -166,6 +90,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
           height: 45,
           width: 300,
           child: TextField(
+            controller: passController,
             keyboardType: TextInputType.visiblePassword,
             obscureText: true,
             style: TextStyle(
@@ -189,51 +114,53 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
     );
   }
 
-  Widget confirmPassword() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 10),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
+  Widget buildForgotPssBtn() {
+    return Container(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () => print('Forgot password Pressed'),
+        child: Text(
+          'Forgot Password?',
+          style: TextStyle(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(0,2)
-                )
-              ]
+              fontWeight: FontWeight.bold
           ),
-          height: 45,
-          width: 300,
-          child: TextField(
-            keyboardType: TextInputType.visiblePassword,
-            obscureText: true,
-            style: TextStyle(
-              color: Colors.black87,
-            ),
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top: 14),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: Color(0xff00008B),
-                ),
-                hintText: 'Confirm Password',
-                hintStyle: TextStyle(
-                  color: Colors.black38,
-                )
-            ),
-          ),
-        )
-      ],
+        ),
+      ),
     );
   }
 
-  Widget buildSignUpbtn() {
+  Widget buildRememberCb() {
+    return Container(
+      height: 20,
+      child: Row(
+        children: [
+          Theme(
+            data: ThemeData(unselectedWidgetColor: Colors.white),
+            child: Checkbox(
+              value: isRememberMe,
+              checkColor: Color(0xff00008B),
+              activeColor: Colors.white,
+              onChanged: (value) {
+                setState(() {
+                  isRememberMe = value;
+                });
+              },
+            ),
+          ),
+          Text(
+            'Remember me',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildLoginBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25),
       width: 100,
@@ -258,11 +185,28 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
               ),
             );
           }
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      Home()));
+          else{
+          final _helper = Helper();
+          try{
+            _helper.firebaselogin(email: emailController.text, password: passController.text);
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Home()));
+          }on FirebaseAuthException catch(e){
+            print(e);
+            // ScaffoldMessenger
+
+          }
+
+          }
+
+
+
+
+
         },
         style: ElevatedButton.styleFrom(
           primary: Colors.white,
@@ -272,7 +216,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
           ),
         ),
         child: Text(
-          'SIGN UP',
+          'LOGIN',
           style: TextStyle(
             color: Color(0xff00008B),
             fontSize: 18,
@@ -283,36 +227,52 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
     );
   }
 
-  Widget buildLoginbtn() {
+  Widget buildSignUpbtn() {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => UserSignUpScreen()),
+        );
       },
       child: RichText(
         text: TextSpan(
             children: [
               TextSpan(
-                  text: 'Already have an Account?',
+                  text: 'User Registration',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   )
               ),
-              TextSpan(
-                  text: 'Login',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  )
-              ),
+
             ]
         ),
       ),
     );
   }
+  Widget buildDoctorSignUpbtn() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => DoctorSignUpScreen()),
+        );
+      },
+      child: RichText(
+        text: TextSpan(
+            children: [
+              TextSpan(
+                  text: 'Doctor Registration',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  )
+              ),
 
+            ]
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -353,7 +313,8 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
                         size: 100,
                       ),
                       Text(
-                        'Doctor Signup',
+
+                        'Sign In',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 40,
@@ -361,17 +322,14 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
                         ),
                       ),
                       SizedBox(height: 20),
-                      buildFirstName(),
-                      SizedBox(height: 20),
-                      buildLastName(),
-                      SizedBox(height: 20),
                       buildEmail(),
                       SizedBox(height: 20),
                       buildPassword(),
-                      SizedBox(height: 20),
-                      confirmPassword(),
+                      buildForgotPssBtn(),
+                      buildRememberCb(),
+                      buildLoginBtn(),
                       buildSignUpbtn(),
-                      buildLoginbtn(),
+                      // buildDoctorSignUpbtn(),
                     ],
                   ),
                 ),
@@ -383,6 +341,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen>{
     );
   }
 }
+
 void Validate(String email) {
   bool isvalid = EmailValidator.validate(email);
   print(isvalid);

@@ -1,13 +1,13 @@
-import 'package:doc/checkup.dart';
+import 'package:doc/view/user/checkup.dart';
 import 'package:doc/helper/helper.dart';
-import 'package:doc/home_page.dart';
+import 'package:doc/view/user/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'loginScreen.dart';
-import 'userregister.dart';
-import 'profileScreen.dart';
-import 'home_page.dart';
-import 'updateprofile.dart';
+import '/view/user/loginScreen.dart';
+import '/view/user/userregister.dart';
+import '/view/user/profileScreen.dart';
+import '/view/user/home_page.dart';
+import '/view/user/updateprofile.dart';
 
 
 void main()async{
@@ -54,6 +54,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Find Doc',
+        
       debugShowCheckedModeBanner: false,
       home: isuserloggedin?Home(): LoginScreen(),
 

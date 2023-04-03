@@ -1,30 +1,15 @@
-
-import 'package:doc/profileScreen.dart';
-
+import 'package:doc/view/user/home_page.dart';
+import 'package:doc/view/user/updateprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 
-class UpdateProfile extends StatefulWidget {
+
+class ProfileScreen extends StatefulWidget {
   @override
-  _UpdateProfileState createState() => _UpdateProfileState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-
-class _UpdateProfileState extends State<UpdateProfile> {
-  late PickedFile _imageFile;
-  final ImagePicker _picker = ImagePicker();
-
-  void takePhoto(ImageSource source) async {
-    var _picker;
-    final pickedFile = await _picker.getImage(
-      source: source,
-    );
-    setState(() {
-      var imageFile = pickedFile;
-    });
-  }
-
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,69 +21,31 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        ProfileScreen()));
+                        Home()));
           },
         ),
         backgroundColor: Colors.white,
-        title: const Text(
-          'Edit Profile',
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.black,
-          ),
-        ),
-
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.check,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProfileScreen()));
-            },
-          )
-        ],
       ),
       body: ListView(
         children: <Widget>[
           Container(
             height: 180.0,
+            decoration: new BoxDecoration(
+
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: const <Widget>[
                     CircleAvatar(
                       backgroundColor: Colors.white,
                       minRadius: 50.0,
                       child: CircleAvatar(
                         radius: 50.0,
-                        backgroundImage: AssetImage("assets/profile.png"),
-                      ),
-                    ),
-
-                    Positioned(
-                      bottom: 20,
-                      right: 20,
-                      child: InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: ((builder) => bottomsheet(context)),
-                          );
-                        },
-                        child: Icon(
-                          Icons.camera_alt,
-                          color: Colors.teal,
-                          size: 27,
-                        ),
+                        backgroundImage: AssetImage("assets/profile.jpg"),
                       ),
                     ),
                   ],
@@ -127,7 +74,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(20),
                       ),
-
                       contentPadding: EdgeInsets.all(5),
                       filled: true,
                       hintText: 'Input Name',
@@ -233,57 +179,32 @@ class _UpdateProfileState extends State<UpdateProfile> {
           const SizedBox(
             height: 35,
           ),
-        ],
-      ),
-    );
-  }
 
-  Widget bottomsheet(BuildContext context) {
-    return Container(
-      height: 100,
-      width: MediaQuery.of(context as BuildContext).size.width,
-      margin: EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      child: Column(
-        children: <Widget>[
-          Text(
-            "Choose Profile Picture",
-            style: TextStyle(
-              fontSize: 20,
+          Container(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                UpdateProfile()));
+                  }, child: Text('Edit Profile'),),
+                ],
+              ),
             ),
-          ),
-
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton.icon(
-                icon: Icon(Icons.camera),
-                onPressed: () {
-                  takePhoto(ImageSource.camera);
-                },
-                label: Text("Camera"),
-              ),
-
-              ElevatedButton.icon(
-                icon: Icon(Icons.image),
-                onPressed: () {
-                  takePhoto(ImageSource.gallery);
-                },
-                label: Text("Gallery"),
-              ),
-            ],
           )
         ],
       ),
     );
   }
-
-
 }
+
+
+
+
+
 
 
