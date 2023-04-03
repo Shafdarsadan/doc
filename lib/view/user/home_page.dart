@@ -1,16 +1,13 @@
-import 'package:doc/appointmentbooking.dart';
-import 'package:doc/checkup.dart';
-import 'package:doc/help.dart';
+import 'package:doc/view/user/appointmentbooking.dart';
+import 'package:doc/view/user/checkup.dart';
+import 'package:doc/view/user/help.dart';
 import 'package:doc/helper/helper.dart';
-import 'package:doc/homelocation.dart';
-import 'package:doc/loginScreen.dart';
-import 'package:doc/profileScreen.dart';
-import 'package:doc/signout.dart';
-import 'package:doc/videoconsultation.dart';
+import 'package:doc/view/user/loginScreen.dart';
+import 'package:doc/view/user/profileScreen.dart';
+import 'package:doc/view/user/videoconsultation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+
 
 
 class Home extends StatefulWidget {
@@ -86,13 +83,12 @@ class _HomeState extends State<Home> {
                     //width: 100,
                     child:
                     GridView.count(
-                      // Create a grid with 2 columns. If you change the scrollDirection to
-                      // horizontal, this produces 2 rows.
+
                       crossAxisCount: 3,
                       padding: const EdgeInsets.all(8),
                       crossAxisSpacing: 2,
                       mainAxisSpacing: 2,
-                      // Generate 100 widgets that display their index in the List.
+
                       children: [
                         InkWell( onTap: (){
 
@@ -135,7 +131,7 @@ class _HomeState extends State<Home> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      VideoconsultScreen()));
+                                      VideoAppoinment()));
                         },
                           child: Card(
                             shape: RoundedRectangleBorder(
@@ -231,17 +227,14 @@ class _HomeState extends State<Home> {
                     padding: const EdgeInsets.only(top:300.0),
                     child: Container(
 
-                      //height: 100,
-                      //width: 100,
                       child:
                       GridView.count(
-                        // Create a grid with 2 columns. If you change the scrollDirection to
-                        // horizontal, this produces 2 rows.
+
                         crossAxisCount: 2,
                         padding: const EdgeInsets.all(30),
                         crossAxisSpacing: 2,
                         mainAxisSpacing: 2,
-                        // Generate 100 widgets that display their index in the List.
+
                         children: [
                           Card(
 

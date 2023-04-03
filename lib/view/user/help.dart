@@ -43,7 +43,7 @@ class Help extends StatelessWidget {
                   'Welcome to Doc helpline',
                   style: TextStyle(
                     fontSize: 30.0,
-                    color: Colors.green,
+                    color: Colors.blueAccent,
                     fontWeight: FontWeight.bold,
                   ),//TextStyle
                 ),//Text
@@ -67,13 +67,7 @@ class Help extends StatelessWidget {
                 ), // ElevatedButton
 
 
-                // DEPRECATED
-                // RaisedButton(
-                // onPressed: _makingPhoneCall,
-                // child: Text('Call'),
-                // textColor: Colors.black,
-                // padding: const EdgeInsets.all(5.0),
-                // ),
+
               ],
             ),
           ),

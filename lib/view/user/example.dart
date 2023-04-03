@@ -3,7 +3,7 @@ import 'package:video_player/video_player.dart';
 
 void main() => runApp(const VideoApp());
 
-/// Stateful widget to fetch and then display video content.
+
 class VideoApp extends StatefulWidget {
   const VideoApp({Key? key}) : super(key: key);
 
@@ -19,7 +19,7 @@ class _VideoAppState extends State<VideoApp> {
     super.initState();
     _controller = VideoPlayerController.asset('assets/videos/doc.mp4');
     _controller.initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+
         setState(() {});
       });
   }

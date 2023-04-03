@@ -1,29 +1,109 @@
-import 'package:doc/doctorregister.dart';
 import 'package:doc/helper/helper.dart';
-import 'package:doc/home_page.dart';
-import 'package:doc/userregister.dart';
+import 'package:doc/view/user/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
-import 'userregister.dart';
 
 
-class LoginScreen extends StatefulWidget{
+class UserSignUpScreen extends StatefulWidget{
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _UserSignUpScreenState createState() => _UserSignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>{
-
+class _UserSignUpScreenState extends State<UserSignUpScreen>{
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passController = TextEditingController();
 
   bool isvalid = true;
-  bool? isRememberMe = false;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passController = TextEditingController();
 
 
+  Widget buildFirstName() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height:8),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0,2)
+                )
+              ]
+          ),
+          height: 45,
+          width: 300,
+          child: TextField(
+            keyboardType: TextInputType.name,
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14),
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Color(0xff00008B),
+                ),
+                hintText: 'First Name',
+                hintStyle: TextStyle(
+                  color: Colors.black38,
+                )
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget buildLastName() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 8),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0,2)
+                )
+              ]
+          ),
+          height: 45,
+          width: 300,
+          child: TextField(
+            keyboardType: TextInputType.name,
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14),
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Color(0xff00008B),
+                ),
+                hintText: 'Last Name',
+                hintStyle: TextStyle(
+                  color: Colors.black38,
+                )
+            ),
+          ),
+        )
+      ],
+    );
+  }
 
   Widget buildEmail() {
     return Column(
@@ -45,8 +125,8 @@ class _LoginScreenState extends State<LoginScreen>{
           ),
           height: 45,
           width: 300,
-          child:  TextField(
-            controller: emailController,
+          child: TextField(
+            controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.black87,
@@ -90,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen>{
           height: 45,
           width: 300,
           child: TextField(
-            controller: passController,
+            controller: _passController,
             keyboardType: TextInputType.visiblePassword,
             obscureText: true,
             style: TextStyle(
@@ -114,59 +194,57 @@ class _LoginScreenState extends State<LoginScreen>{
     );
   }
 
-  Widget buildForgotPssBtn() {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () => print('Forgot password Pressed'),
-        child: Text(
-          'Forgot Password?',
-          style: TextStyle(
+  Widget confirmPassword() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 10),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
               color: Colors.white,
-              fontWeight: FontWeight.bold
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0,2)
+                )
+              ]
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildRememberCb() {
-    return Container(
-      height: 20,
-      child: Row(
-        children: [
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: isRememberMe,
-              checkColor: Color(0xff00008B),
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  isRememberMe = value;
-                });
-              },
-            ),
-          ),
-          Text(
-            'Remember me',
+          height: 45,
+          width: 300,
+          child: TextField(
+            keyboardType: TextInputType.visiblePassword,
+            obscureText: true,
             style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+              color: Colors.black87,
             ),
-          )
-        ],
-      ),
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Color(0xff00008B),
+                ),
+                hintText: 'Confirm Password',
+                hintStyle: TextStyle(
+                  color: Colors.black38,
+                )
+            ),
+          ),
+        )
+      ],
     );
   }
 
-  Widget buildLoginBtn() {
+  Widget buildSignUpbtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25),
       width: 100,
       child: ElevatedButton(
-        onPressed: () {
-          if(!EmailValidator.validate(emailController.text)){
+        onPressed: () async{
+          if(!EmailValidator.validate(_emailController.text)){
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Container(
@@ -184,26 +262,21 @@ class _LoginScreenState extends State<LoginScreen>{
                 elevation: 0,
               ),
             );
-          }
-          else{
-          final _helper = Helper();
-          try{
-            _helper.firebaselogin(email: emailController.text, password: passController.text).whenComplete(() => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Home())));
-          }on FirebaseAuthException catch(e){
-            print(e);
-            // ScaffoldMessenger
+          }else{
+            final _helper = Helper();
+            try{
+             await _helper.firebasecreateuser(email: _emailController.text, password: _passController.text).whenComplete(() =>Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Home())) );
+            }on FirebaseAuthException catch(e) {
+              print(e);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${e.message}")));
+
+            }
 
           }
-
-          }
-
-
-
-
 
         },
         style: ElevatedButton.styleFrom(
@@ -214,7 +287,7 @@ class _LoginScreenState extends State<LoginScreen>{
           ),
         ),
         child: Text(
-          'LOGIN',
+          'SIGN UP',
           style: TextStyle(
             color: Color(0xff00008B),
             fontSize: 18,
@@ -225,52 +298,36 @@ class _LoginScreenState extends State<LoginScreen>{
     );
   }
 
-  Widget buildSignUpbtn() {
+  Widget buildLoginbtn() {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => UserSignUpScreen()),
-        );
+        Navigator.pop(context);
       },
       child: RichText(
         text: TextSpan(
             children: [
               TextSpan(
-                  text: 'User Registration',
+                  text: 'Already have an Account?',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   )
               ),
-
-            ]
-        ),
-      ),
-    );
-  }
-  Widget buildDoctorSignUpbtn() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DoctorSignUpScreen()),
-        );
-      },
-      child: RichText(
-        text: TextSpan(
-            children: [
               TextSpan(
-                  text: 'Doctor Registration',
+                  text: 'Login',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                   )
               ),
-
             ]
         ),
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -311,8 +368,7 @@ class _LoginScreenState extends State<LoginScreen>{
                         size: 100,
                       ),
                       Text(
-
-                        'Sign In',
+                        'User Signup',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 40,
@@ -320,14 +376,17 @@ class _LoginScreenState extends State<LoginScreen>{
                         ),
                       ),
                       SizedBox(height: 20),
+                      buildFirstName(),
+                      SizedBox(height: 20),
+                      buildLastName(),
+                      SizedBox(height: 20),
                       buildEmail(),
                       SizedBox(height: 20),
                       buildPassword(),
-                      buildForgotPssBtn(),
-                      buildRememberCb(),
-                      buildLoginBtn(),
+                      SizedBox(height: 20),
+                      confirmPassword(),
                       buildSignUpbtn(),
-                      buildDoctorSignUpbtn(),
+                      buildLoginbtn(),
                     ],
                   ),
                 ),
@@ -339,7 +398,6 @@ class _LoginScreenState extends State<LoginScreen>{
     );
   }
 }
-
 void Validate(String email) {
   bool isvalid = EmailValidator.validate(email);
   print(isvalid);
