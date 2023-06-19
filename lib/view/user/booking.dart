@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doc/view/user/razorpay.dart';
+import 'package:doc/view/user/select_location_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Booking extends StatelessWidget {
   String categoryName;
@@ -78,6 +81,16 @@ class Booking extends StatelessWidget {
       appBar: AppBar(
         title: Text('Bookings'),
         backgroundColor: Color(0xff1D7BA1),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SelectLocationPage()));
+              },
+              icon: Icon(Icons.search))
+        ],
       ),
       body: SafeArea(
         child: FutureBuilder(
@@ -95,6 +108,12 @@ class Booking extends StatelessWidget {
               }
 
               if (snapshot.hasData) {
+                if (snapshot.data!.docs.isEmpty)
+                  return Center(
+                      child: Text(
+                    "No doctors Available",
+                    style: TextStyle(color: Colors.black),
+                  ));
                 return ListView.builder(
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(0.0),
@@ -143,46 +162,15 @@ class Booking extends StatelessWidget {
                                   InkWell(
                                     //sr
                                     onTap: () async {
-                                      showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.now(),
-                                      ).then((value) async {
-                                        await FirebaseFirestore.instance
-                                            .collection('appoinments')
-                                            .doc(
-                                              snapshot.data!.docs[i]['doc_id'] +
-                                                  FirebaseAuth.instance
-                                                      .currentUser!.uid +
-                                                  DateTime(
-                                                          DateTime.now().year,
-                                                          DateTime.now().month,
-                                                          DateTime.now().day,
-                                                          value!.hour,
-                                                          value.minute)
-                                                      .toString(),
-                                            )
-                                            .set({
-                                          'doc_name': snapshot.data!.docs[i]
+                                      selectDateButtonSheet(context,
+                                          doc_id: snapshot.data!.docs[i].id,
+                                          shift: snapshot.data!.docs[i]['slot'],
+                                          doc_name: snapshot.data!.docs[i]
                                               ['name'],
-                                          'uid': FirebaseAuth
-                                              .instance.currentUser!.uid,
-                                          'name': FirebaseAuth
-                                              .instance.currentUser!.email,
-                                          'doctor': snapshot.data!.docs[i]
-                                              ['doc_id'],
-                                          'meet_link': "",
-                                          'time': DateTime(
-                                              DateTime.now().year,
-                                              DateTime.now().month,
-                                              DateTime.now().day,
-                                              value!.hour,
-                                              value.minute),
-                                        }).then((value) => ScaffoldMessenger.of(
-                                                    context)
-                                                .showSnackBar(SnackBar(
-                                                    content: Text(
-                                                        "Appoint booked"))));
-                                      });
+                                          meeting_link: snapshot.data!.docs[i]
+                                              ['meet_link'],
+                                          type: is_video ? "online" : "offline",
+                                          fee: snapshot.data!.docs[i]['fee']);
                                       // showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 1)));
                                     },
                                     child: Container(
@@ -207,28 +195,6 @@ class Booking extends StatelessWidget {
                                 height: 1,
                                 color: Colors.black,
                                 margin: EdgeInsets.symmetric(vertical: 6)),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Slot 10.00am - 06.00pm",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    snapshot.data!.docs[i]['fee'],
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ));
                   },
@@ -236,7 +202,7 @@ class Booking extends StatelessWidget {
               } else {
                 return Center(
                     child: Text(
-                  "No doctors Available",
+                  "something went wrong",
                   style: TextStyle(color: Colors.black),
                 ));
               }
@@ -249,38 +215,42 @@ class Booking extends StatelessWidget {
       {required String doc_id,
       required String shift,
       required String doc_name,
+      required String fee,
       String meeting_link = '',
       String type = 'online'}) {
+    DateTime? date;
+    Map<String, TimeOfDay>? selected;
     showModalBottomSheet(
         context: context,
         builder: (context) => StatefulBuilder(builder: (context, setState) {
-              DateTime? date;
-              Map<String, TimeOfDay>? selected;
               return Container(
                 padding: EdgeInsets.all(10),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     InkWell(
-                      onTap: () {
-                        setState(() async {
-                          date = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(2222));
+                      onTap: () async {
+                        var selected_date = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2222));
+                        setState(() {
+                          date = selected_date;
                         });
                       },
                       child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
                         padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                         decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black45),
+                            border: Border.all(color: Colors.blue),
                             borderRadius: BorderRadius.circular(20),
-                            color: Colors.black26),
+                            color: Colors.blueAccent[500]),
                         child: Text(date == null
                             ? "select date"
-                            : "date : ${date.day}/${date.month}/${date.year}"),
+                            : "date : ${date?.day}/${date?.month}/${date?.year}"),
                       ),
                     ),
                     if (date != null)
@@ -288,42 +258,64 @@ class Booking extends StatelessWidget {
                           stream: FirebaseFirestore.instance
                               .collection('appoinments')
                               .where('doctor', isEqualTo: doc_id)
-                              .where('time',
+                              .where('start_time',
                                   isLessThan: DateTime(date!.year, date!.month,
                                       date!.day, 23, 59, 59))
-                              .where('time',
+                              .where('start_time',
                                   isGreaterThan: DateTime(
                                       date!.year, date!.month, date!.day))
                               .snapshots(),
                           builder: (context, snapshot) {
+                            print(snapshot.error.toString());
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting)
                               return Center(child: CircularProgressIndicator());
                             if (snapshot.hasData) {
+                              var list = (shift == "full"
+                                      ? fullSlots
+                                      : shift == 'morning'
+                                          ? morningSlots
+                                          : eveningSlots)
+                                  .skipWhile((value) {
+                                return DateTime(
+                                            date!.year,
+                                            date!.month,
+                                            date!.day,
+                                            value['from']!.hour,
+                                            value['from']!.minute)
+                                        .microsecondsSinceEpoch <
+                                    DateTime.now().microsecondsSinceEpoch;
+                              });
+                              if (list.isEmpty)
+                                return Center(
+                                  child: Text(
+                                      "No Slot Available for ${DateFormat('dd MMM yyyy').format(date!)}"),
+                                );
                               return Container(
-                                height: 400,
+                                height: 300,
                                 child: ListView(
                                     shrinkWrap: true,
-                                    children: (shift == "full"
-                                            ? fullSlots
-                                            : shift == 'morning'
-                                                ? morningSlots
-                                                : eveningSlots)
-                                        .map(
+                                    children: list.map(
                                       (data) {
                                         String? status = getStatus(
                                             DateTime(
-                                                date!.day,
+                                                date!.year,
                                                 date!.month,
                                                 date!.day,
-                                                selected!['from']!.hour,
-                                                selected!['from']!.minute),
+                                                data['from']!.hour,
+                                                data['from']!.minute),
                                             data: snapshot.data!.docs);
                                         return InkWell(
-                                          onTap: () {
+                                          onTap: () async {
                                             if (status != null) return;
+                                            if (selected != null)
+                                              await FirebaseFirestore.instance
+                                                  .collection('appoinments')
+                                                  .doc(
+                                                      '${doc_id}-${selected!['from']}')
+                                                  .delete();
                                             setState(() => selected = data);
-                                            FirebaseFirestore.instance
+                                            await FirebaseFirestore.instance
                                                 .collection('appoinments')
                                                 .doc(
                                                     '${doc_id}-${selected!['from']}')
@@ -334,10 +326,14 @@ class Booking extends StatelessWidget {
                                               'name': FirebaseAuth
                                                   .instance.currentUser!.email,
                                               'doctor': doc_id,
+                                              'payment_id': null,
                                               'type': type,
                                               'meet_link': meeting_link,
-                                              'start_time': selected!['from'],
-                                              'end_time': selected!['to'],
+                                              'created_at': DateTime.now(),
+                                              'start_time': getDate(
+                                                  date!, selected!['from']!),
+                                              'end_time': getDate(
+                                                  date!, selected!['to']!),
                                               'status': "waiting"
                                             });
                                           },
@@ -353,10 +349,22 @@ class Booking extends StatelessWidget {
                                                             : Colors.red),
                                                 borderRadius:
                                                     BorderRadius.circular(5),
-                                                color: Colors.grey[500]),
+                                                color: status == null
+                                                    ? Colors.green[
+                                                        selected == data
+                                                            ? 200
+                                                            : 100]
+                                                    : status == 'waiting'
+                                                        ? selected == data
+                                                            ? Colors.grey
+                                                            : Colors.yellow[100]
+                                                        : Colors.red[
+                                                            selected == data
+                                                                ? 200
+                                                                : 100]),
                                             child: Center(
                                               child: Text(
-                                                  '${data['from']!.hour}:${data['from']!.minute}\t${data['to']!.hour}:${data['to']!.minute}'),
+                                                  '${DateFormat("hh:mm a").format(new DateTime(2000, 1, 1, data['from']!.hour, data['from']!.minute))}\t-\t${DateFormat("hh:mm a").format(new DateTime(2000, 1, 1, data['to']!.hour, data['to']!.minute))}'),
                                             ),
                                           ),
                                         );
@@ -370,10 +378,16 @@ class Booking extends StatelessWidget {
                           }),
                     ElevatedButton(
                         onPressed: () {
-                          FirebaseFirestore.instance
-                              .collection('appoinments')
-                              .doc('${doc_id}-${selected!['from']}')
-                              .update({"status": "booked"});
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RazorpayPaymentScreen(
+                                      amount: fee,
+                                      booking_id:
+                                          '${doc_id}-${selected!['from']}',
+                                      email: FirebaseAuth
+                                              .instance.currentUser!.email ??
+                                          "")));
                         },
                         child: Text("Confirm"))
                   ],
@@ -382,10 +396,29 @@ class Booking extends StatelessWidget {
             }));
   }
 
+  DateTime getDate(DateTime date, TimeOfDay day) =>
+      DateTime(date.year, date.month, date.day, day.hour, day.minute);
+
   String? getStatus(DateTime date,
       {required List<QueryDocumentSnapshot<Map>> data}) {
-    return data.firstWhere((element) =>
-            date.isAtSameMomentAs(element['start_time']))['status'] ??
-        null;
+    if (data.isEmpty) return null;
+    print(date);
+    try {
+      return data.firstWhere((element) {
+        var startDate = (element['start_time'] as Timestamp).toDate();
+        print("start date:" + startDate.toString());
+        var val = date.isAtSameMomentAs(startDate);
+        if (val && element['status'] == 'waiting') {
+          val = ((element['created_at'] as Timestamp)
+                      .toDate()
+                      .microsecondsSinceEpoch +
+                  Duration(minutes: 5).inMicroseconds) >
+              DateTime.now().microsecondsSinceEpoch;
+        }
+        return val;
+      })['status'];
+    } catch (e) {
+      return null;
+    }
   }
 }
