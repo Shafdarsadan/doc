@@ -1,9 +1,11 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc/view/user/booking.dart';
 import 'package:doc/view/user/home_page.dart';
-import 'package:doc/view/user/homelocation.dart';
 import 'package:flutter/material.dart';
+
+import 'all_doctor_search.dart';
 
 class AppointmentScreen extends StatefulWidget {
   @override
@@ -41,8 +43,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => Locationsearch(
-                                title: '',
+                          builder: (_) => SearchDoctor(
+                                is_video: false,
                               )));
                 },
                 child: Container(
@@ -126,6 +128,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 class _CategoryCard extends StatelessWidget {
   String category;
   String img_url;
+
   _CategoryCard({super.key, required this.category, required this.img_url});
 
   @override
@@ -147,20 +150,38 @@ class _CategoryCard extends StatelessWidget {
         child: Column(
           children: [
             Container(
-                height: 100,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)),
-                  color: Color(0xcc1D7BA1),
+              height: 100,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+                color: Color(0xcc1D7BA1),
+              ),
+              child: CachedNetworkImage(
+                width: 50,
+                height: 40,
+                imageUrl: img_url,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    Container(
+                  color: Colors.white38,
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                        value: downloadProgress.progress),
+                  ),
                 ),
-                child: Image.network(
-                  img_url,
-                  width: 50,
-                  height: 40,
-                  fit: BoxFit.cover,
-                )),
+                errorWidget: (context, url, error) => Image.asset(
+                  "assets/images/doctors.jpg",
+                  frameBuilder: (context, child, frame, _) => Container(
+                    color: Colors.black54,
+                    child: child,
+                  ),
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 25.0),
               child: Column(

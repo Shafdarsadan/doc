@@ -1,7 +1,6 @@
 import 'package:doc/helper/helper.dart';
 import 'package:doc/view/user/appointmentbooking.dart';
 import 'package:doc/view/user/booking_history.dart';
-import 'package:doc/view/user/checkup.dart';
 import 'package:doc/view/user/help.dart';
 import 'package:doc/view/user/loginScreen.dart';
 import 'package:doc/view/user/update_profile.dart';
@@ -81,13 +80,12 @@ class _HomeState extends State<Home> {
           ),
         ]),
       ),
-      body: Stack(
-        children: [
-          Container(
-            //height: 100,
-            //width: 100,
-            child: GridView.count(
-              crossAxisCount: 3,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
               padding: const EdgeInsets.all(8),
               crossAxisSpacing: 2,
               mainAxisSpacing: 2,
@@ -100,37 +98,35 @@ class _HomeState extends State<Home> {
                             builder: (context) => AppointmentScreen()));
                   },
                   child: Card(
+                    clipBehavior: Clip.hardEdge,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                            height: 75,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
-                              color: Color(0xffdcdada),
-                            ),
-                            child: Image.asset(
-                              "assets/images/booking.png",
-                              width: 50,
-                              height: 40,
-                            )),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Book",
-                                style: TextStyle(fontSize: 12),
+                        Flexible(
+                          child: Container(
+                              // height: 75,
+                              // width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)),
+                                color: Color(0xffdcdada),
                               ),
-                              Text(" Appointment ",
-                                  style: TextStyle(fontSize: 12)),
-                            ],
-                          ),
+                              child: Image.asset(
+                                "assets/images/booking.png",
+                                fit: BoxFit.cover,
+                              )),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          "Book Appointment",
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -144,91 +140,81 @@ class _HomeState extends State<Home> {
                             builder: (context) => VideoAppoinment()));
                   },
                   child: Card(
+                    clipBehavior: Clip.hardEdge,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
                       children: [
-                        Container(
-                            height: 75,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
-                              color: Color(0xffdcdada),
-                            ),
-                            child: Image.asset(
-                              "assets/images/video_consult.png",
-                              width: 50,
-                              height: 40,
-                            )),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Video",
-                                style: TextStyle(fontSize: 12),
+                        Flexible(
+                          child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)),
+                                color: Color(0xffdcdada),
                               ),
-                              Text("Consultation ",
-                                  style: TextStyle(fontSize: 12)),
-                            ],
-                          ),
+                              child: Image.asset(
+                                "assets/images/video_consult.png",
+                                fit: BoxFit.cover,
+                              )),
                         ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text("Video Consultation ",
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w500)),
                       ],
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CheckupScreen()));
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                            height: 75,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
-                              color: Color(0xffdcdada),
-                            ),
-                            child: Image.asset(
-                              "assets/images/body_checkups.png",
-                              width: 50,
-                              height: 40,
-                            )),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Body",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text("Checkups", style: TextStyle(fontSize: 12)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) => CheckupScreen()));
+                //   },
+                //   child: Card(
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(10),
+                //     ),
+                //     child: Column(
+                //       children: [
+                //         Container(
+                //             height: 75,
+                //             width: double.infinity,
+                //             decoration: BoxDecoration(
+                //               borderRadius: BorderRadius.only(
+                //                   topLeft: Radius.circular(10),
+                //                   topRight: Radius.circular(10)),
+                //               color: Color(0xffdcdada),
+                //             ),
+                //             child: Image.asset(
+                //               "assets/images/body_checkups.png",
+                //               width: 50,
+                //               height: 40,
+                //             )),
+                //         Padding(
+                //           padding: const EdgeInsets.only(top: 8.0),
+                //           child: Column(
+                //             children: [
+                //               Text(
+                //                 "Body",
+                //                 style: TextStyle(fontSize: 12),
+                //               ),
+                //               Text("Checkups", style: TextStyle(fontSize: 12)),
+                //             ],
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 150.0),
-            child: Container(
+            Container(
                 height: 150,
                 // width: MediaQuery.of(context).size.width * 1,
                 width: double.infinity,
@@ -239,10 +225,8 @@ class _HomeState extends State<Home> {
                   "assets/images/ads.jpg",
                   fit: BoxFit.fill,
                 )),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 305.0),
-            child: Row(
+            Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(padding: EdgeInsets.only(left: 15)),
                 Text(
@@ -251,21 +235,21 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 300.0),
-            child: Container(
+            Container(
               child: GridView.count(
+                shrinkWrap: true,
                 crossAxisCount: 2,
                 padding: const EdgeInsets.all(30),
                 crossAxisSpacing: 2,
                 mainAxisSpacing: 2,
                 children: [
                   Card(
+                    clipBehavior: Clip.hardEdge,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                             height: 100,
@@ -280,25 +264,23 @@ class _HomeState extends State<Home> {
                               "assets/images/general.png",
                               width: 50,
                               height: 40,
+                              fit: BoxFit.cover,
                             )),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "General Physician",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                  "Consult for fever, cough, pain, headache, tiredness and more ",
-                                  style: TextStyle(fontSize: 8)),
-                            ],
-                          ),
+                        SizedBox(
+                          height: 5,
                         ),
+                        Text(
+                          "General Physician",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                            "Consult for fever, cough, pain, headache, tiredness and more ",
+                            style: TextStyle(fontSize: 8)),
                       ],
                     ),
                   ),
                   Card(
+                    clipBehavior: Clip.hardEdge,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -317,29 +299,28 @@ class _HomeState extends State<Home> {
                               "assets/images/dermatology.png",
                               width: 50,
                               height: 40,
+                              fit: BoxFit.cover,
                             )),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Dermatologist",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                  "Get answer to hairfall, pimples, skin rashes, and more such problems",
-                                  style: TextStyle(fontSize: 8)),
-                            ],
-                          ),
+                        SizedBox(
+                          height: 5,
                         ),
+                        Text(
+                          "Dermatologist",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                            "Get answer to hairfall, pimples, skin rashes, and more such problems",
+                            style: TextStyle(fontSize: 8)),
                       ],
                     ),
                   ),
                   Card(
+                    clipBehavior: Clip.hardEdge,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                             height: 100,
@@ -354,25 +335,23 @@ class _HomeState extends State<Home> {
                               "assets/images/gynaecologist.png",
                               width: MediaQuery.of(context).size.width * 0.5,
                               height: 35,
+                              fit: BoxFit.cover,
                             )),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Gynaecologist",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                  "Consult for periods-related problems, pregnancy, fertility issues",
-                                  style: TextStyle(fontSize: 8)),
-                            ],
-                          ),
+                        SizedBox(
+                          height: 5,
                         ),
+                        Text(
+                          "Gynaecologist",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                            "Consult for periods-related problems, pregnancy, fertility issues",
+                            style: TextStyle(fontSize: 8)),
                       ],
                     ),
                   ),
                   Card(
+                    clipBehavior: Clip.hardEdge,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -391,29 +370,26 @@ class _HomeState extends State<Home> {
                               "assets/images/ent.png",
                               width: 40,
                               height: 40,
+                              fit: BoxFit.cover,
                             )),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "ENT specialist",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(
-                                  "Consult your ENT specialist for vertigo, runny nose ",
-                                  style: TextStyle(fontSize: 8)),
-                            ],
-                          ),
+                        SizedBox(
+                          height: 8,
                         ),
+                        Text(
+                          "ENT specialist",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                            "Consult your ENT specialist for vertigo, runny nose ",
+                            style: TextStyle(fontSize: 8)),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

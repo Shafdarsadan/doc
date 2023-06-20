@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart' as cloud;
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geocoding/geocoding.dart';
@@ -238,7 +239,11 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                       onPressed: () {
                         print(
                             '${location.value?.latitude} ${location.value?.longitude}');
-                        Navigator.pop(context, location.value);
+                        var loc = location.value == null
+                            ? null
+                            : cloud.GeoPoint(location.value!.latitude,
+                                location.value!.longitude);
+                        Navigator.pop(context, loc);
                       },
                       height: 60,
                       textColor: Colors.white,

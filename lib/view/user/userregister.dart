@@ -249,8 +249,8 @@ class _UserSignUpScreenState extends State<UserSignUpScreen> {
                   .firebasecreateuser(
                       email: _emailController.text,
                       password: _passController.text)
-                  .whenComplete(
-                    () async => await FirebaseFirestore.instance
+                  .then(
+                    (value) async => await FirebaseFirestore.instance
                         .collection('patient')
                         .doc(FirebaseAuth.instance.currentUser!.uid)
                         .set({

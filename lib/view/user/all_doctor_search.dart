@@ -9,9 +9,8 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
 
-class Booking extends StatelessWidget {
-  String categoryName;
-  bool is_video;
+class SearchDoctor extends StatelessWidget {
+  final bool is_video;
   Rxn<GeoPoint> point = Rxn<GeoPoint>();
 
   List<Map<String, TimeOfDay>> morningSlots = [
@@ -77,14 +76,14 @@ class Booking extends StatelessWidget {
   late List<Map<String, TimeOfDay>> fullSlots;
 
   // Booking({Key? key}) : super(key: key);
-  Booking({required this.categoryName, required this.is_video});
+  SearchDoctor({required this.is_video});
 
   @override
   Widget build(BuildContext context) {
     fullSlots = morningSlots + eveningSlots;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bookings'),
+        title: Text('Search for doctor'),
         backgroundColor: Color(0xff1D7BA1),
         actions: [
           IconButton(
@@ -99,11 +98,9 @@ class Booking extends StatelessWidget {
       ),
       body: SafeArea(
         child: Obx(() {
-          var future = FirebaseFirestore.instance
-              .collection('user')
-              .where("specialisation", isEqualTo: categoryName)
-              .where("consult_type",
-                  isEqualTo: is_video ? "Online" : "offline");
+          var future = FirebaseFirestore.instance.collection('user').where(
+              "consult_type",
+              isEqualTo: is_video ? "Online" : "offline");
           if (point.value != null) {
             var radiusInKM = 10;
             var newPlusPoint = GeoPoint(
@@ -176,6 +173,13 @@ class Booking extends StatelessWidget {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 16,
+                                                color: Colors.black),
+                                          ),
+                                          Text(
+                                            "(${snapshot.data!.docs[i]['specialisation']})",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14,
                                                 color: Colors.black),
                                           )
                                         ],
