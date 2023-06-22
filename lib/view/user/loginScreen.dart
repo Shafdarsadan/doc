@@ -1,29 +1,22 @@
-import 'package:doc/view/doctor/doctorregister.dart';
 import 'package:doc/helper/helper.dart';
+import 'package:doc/view/doctor/doctorregister.dart';
 import 'package:doc/view/user/home_page.dart';
 import 'package:doc/view/user/userregister.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:email_validator/email_validator.dart';
-import 'userregister.dart';
 
-
-class LoginScreen extends StatefulWidget{
-
+class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>{
-
-
+class _LoginScreenState extends State<LoginScreen> {
   bool isvalid = true;
   bool? isRememberMe = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
-
-
 
   Widget buildEmail() {
     return Column(
@@ -37,15 +30,11 @@ class _LoginScreenState extends State<LoginScreen>{
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(0,2)
-                )
-              ]
-          ),
+                    color: Colors.black26, blurRadius: 6, offset: Offset(0, 2))
+              ]),
           height: 45,
           width: 300,
-          child:  TextField(
+          child: TextField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
@@ -61,8 +50,7 @@ class _LoginScreenState extends State<LoginScreen>{
                 hintText: 'Email',
                 hintStyle: TextStyle(
                   color: Colors.black38,
-                )
-            ),
+                )),
           ),
         )
       ],
@@ -81,12 +69,8 @@ class _LoginScreenState extends State<LoginScreen>{
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(0,2)
-                )
-              ]
-          ),
+                    color: Colors.black26, blurRadius: 6, offset: Offset(0, 2))
+              ]),
           height: 45,
           width: 300,
           child: TextField(
@@ -106,8 +90,7 @@ class _LoginScreenState extends State<LoginScreen>{
                 hintText: 'Password',
                 hintStyle: TextStyle(
                   color: Colors.black38,
-                )
-            ),
+                )),
           ),
         )
       ],
@@ -121,10 +104,7 @@ class _LoginScreenState extends State<LoginScreen>{
         onPressed: () => print('Forgot password Pressed'),
         child: Text(
           'Forgot Password?',
-          style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -166,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen>{
       width: 100,
       child: ElevatedButton(
         onPressed: () {
-          if(!EmailValidator.validate(emailController.text)){
+          if (!EmailValidator.validate(emailController.text)) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Container(
@@ -177,36 +157,29 @@ class _LoginScreenState extends State<LoginScreen>{
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
-                  child: Text("Invalid Email",style: TextStyle(color: Colors.black),),
+                  child: Text(
+                    "Invalid Email",
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
               ),
             );
+          } else {
+            final _helper = Helper();
+            try {
+              _helper.firebaselogin(
+                  email: emailController.text, password: passController.text);
+
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => Home()));
+            } on FirebaseAuthException catch (e) {
+              print(e);
+              // ScaffoldMessenger
+            }
           }
-          else{
-          final _helper = Helper();
-          try{
-            _helper.firebaselogin(email: emailController.text, password: passController.text);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Home()));
-          }on FirebaseAuthException catch(e){
-            print(e);
-            // ScaffoldMessenger
-
-          }
-
-          }
-
-
-
-
-
         },
         style: ElevatedButton.styleFrom(
           primary: Colors.white,
@@ -230,46 +203,43 @@ class _LoginScreenState extends State<LoginScreen>{
   Widget buildSignUpbtn() {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => UserSignUpScreen()),
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UserSignUpScreen()),
         );
       },
       child: RichText(
-        text: TextSpan(
-            children: [
-              TextSpan(
-                  text: 'User Registration',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  )
-              ),
-
-            ]
-        ),
+        text: TextSpan(children: [
+          TextSpan(
+              text: 'User Registration',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              )),
+        ]),
       ),
     );
   }
+
   Widget buildDoctorSignUpbtn() {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DoctorSignUpScreen()),
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DoctorSignUpScreen()),
         );
       },
       child: RichText(
-        text: TextSpan(
-            children: [
-              TextSpan(
-                  text: 'Doctor Registration',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  )
-              ),
-
-            ]
-        ),
+        text: TextSpan(children: [
+          TextSpan(
+              text: 'Doctor Registration',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              )),
+        ]),
       ),
     );
   }
@@ -290,20 +260,15 @@ class _LoginScreenState extends State<LoginScreen>{
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color(0x331D7BA1),
-                          Color(0x661D7BA1),
-                          Color(0x991D7BA1),
-                          Color(0xcc1D7BA1),
-                          Color(0xff1D7BA1),
-                        ]
-                    )
-                ),
+                      Color(0x331D7BA1),
+                      Color(0x661D7BA1),
+                      Color(0x991D7BA1),
+                      Color(0xcc1D7BA1),
+                      Color(0xff1D7BA1),
+                    ])),
                 child: SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 25,
-                      vertical: 120
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 120),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -313,7 +278,6 @@ class _LoginScreenState extends State<LoginScreen>{
                         size: 100,
                       ),
                       Text(
-
                         'Sign In',
                         style: TextStyle(
                           color: Colors.white,

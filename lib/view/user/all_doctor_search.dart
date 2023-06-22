@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc/view/user/razorpay.dart';
 import 'package:doc/view/user/select_location_page.dart';
@@ -157,8 +158,33 @@ class SearchDoctor extends StatelessWidget {
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
                                       clipBehavior: Clip.hardEdge,
-                                      child: Image.asset(
-                                          "assets/images/doctors.jpg"),
+                                      child: CachedNetworkImage(
+                                        imageUrl: snapshot.data!.docs[i]
+                                        ['imgurl'],
+                                        progressIndicatorBuilder:
+                                            (context, url, downloadProgress) =>
+                                            Container(
+                                              color: Colors.white38,
+                                              width: double.infinity,
+                                              height: double.infinity,
+                                              child: Center(
+                                                child: CircularProgressIndicator(
+                                                    value:
+                                                    downloadProgress.progress),
+                                              ),
+                                            ),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(
+                                              "assets/images/doctors.jpg",
+                                              frameBuilder:
+                                                  (context, child, frame, _) =>
+                                                  Container(
+                                                    color: Colors.black54,
+                                                    child: child,
+                                                  ),
+                                            ),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(
